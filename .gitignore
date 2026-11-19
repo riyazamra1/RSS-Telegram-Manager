@@ -1,0 +1,19 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.agekey
+*.identity
+security/private/
+.DS_Store
+
+# Plaintext source archives and temporary build output
+protected-source/*
+!protected-source/*.age
+*.tar
+*.tar.gz
+*.zip
+*.log
+.tmp/

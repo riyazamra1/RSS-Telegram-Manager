@@ -1,0 +1,2 @@
+# Encrypted source bundles must never be diffed or text-normalized
+*.age binary

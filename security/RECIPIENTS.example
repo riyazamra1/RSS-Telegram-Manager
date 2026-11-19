@@ -1,0 +1,3 @@
+# Copy this file to security/RECIPIENTS after running ./security/setup-keys.sh.
+# Replace the placeholder with the generated public age recipient (age1...).
+# Public recipient keys are safe to publish. NEVER publish the matching identity/private key.

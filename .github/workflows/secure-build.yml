@@ -1,0 +1,60 @@
+name: RSS Telegram Manager — protected source verification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rss-telegram-secure-source
+  cancel-in-progress: false
+
+jobs:
+  verify-encrypted-source:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: rss-telegram-secure-build
+    steps:
+      - name: Check out trusted main revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install age
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes age
+
+      - name: Decrypt and validate archive without publishing plaintext
+        shell: bash
+        env:
+          AGE_IDENTITY: ${{ secrets.RSS_TELEGRAM_AGE_IDENTITY }}
+        run: |
+          set -euo pipefail
+          umask 077
+          encrypted='protected-source/source.tar.gz.age'
+          test -s "$encrypted" || {
+            echo "Encrypted source archive is not present yet." >&2
+            exit 1
+          }
+          test -n "$AGE_IDENTITY" || {
+            echo "Environment secret RSS_TELEGRAM_AGE_IDENTITY is not configured." >&2
+            exit 1
+          }
+
+          identity="$RUNNER_TEMP/rss-telegram-identity.txt"
+          plaintext="$RUNNER_TEMP/rss-telegram-source.tar.gz"
+          cleanup() {
+            rm -f -- "$identity" "$plaintext"
+          }
+          trap cleanup EXIT
+
+          printf '%s\n' "$AGE_IDENTITY" > "$identity"
+          chmod 600 "$identity"
+          age -d -i "$identity" -o "$plaintext" "$encrypted"
+          tar -tzf "$plaintext" >/dev/null
+          echo "Encrypted source successfully decrypted and archive structure validated."
+          echo "No plaintext source was uploaded, cached, or deployed."
+          echo "Application build and deployment are intentionally not configured yet."
