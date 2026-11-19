@@ -2,7 +2,7 @@
 set -euo pipefail
 umask 077
 
-ROOT="$(cd -- "$(dirname -- -- "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/rss-telegram-manager"
 IDENTITY="$CONFIG_DIR/identity.txt"
 RECIPIENTS="$ROOT/security/RECIPIENTS"

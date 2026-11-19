@@ -33,7 +33,10 @@ fi
 SOURCE_PARENT="$(dirname -- "$SOURCE")"
 SOURCE_NAME="$(basename -- "$SOURCE")"
 tar --exclude=.git --exclude=node_modules --exclude=.venv --exclude=venv \
-    --exclude=.env --exclude=.env.* --exclude='*.pem' --exclude='*.key' \
+    --exclude=.env --exclude=.env.* --exclude=.ssh --exclude=.aws --exclude=.azure \
+    --exclude='*.pem' --exclude='*.key' --exclude='*.p12' --exclude='*.pfx' \
+    --exclude='*.jks' --exclude='*.keystore' --exclude='*.kdbx' \
+    --exclude='id_rsa*' --exclude='id_ed25519*' --exclude='id_ecdsa*' \
     --exclude='*.agekey' --exclude='*.identity' \
     -C "$SOURCE_PARENT" -czf - "$SOURCE_NAME" | age -R "$RECIPIENTS" -o "$OUTPUT"
 

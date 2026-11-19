@@ -1,4 +1,4 @@
-# Local configuration and credentials
+# Local configuration, credentials and private-key material
 .env
 .env.*
 !.env.example
@@ -6,7 +6,18 @@
 *.key
 *.agekey
 *.identity
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdbx
+id_rsa*
+id_ed25519*
+id_ecdsa*
 security/private/
+.ssh/
+.aws/
+.azure/
 .DS_Store
 
 # Plaintext source archives and temporary build output
