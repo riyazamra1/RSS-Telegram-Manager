@@ -29,7 +29,25 @@ from unofficial mirrors.
 
 ## 1. Generate a key pair
 
-From the repository root, run:
+**Android / Termux:** the packaged `age-keygen` command can fail on some Termux builds.
+Use the repository's Termux helper instead. It generates a native age X25519 identity
+through the official Go age library, creates a passphrase-encrypted recovery copy, and
+runs an actual encryption/decryption verification:
+
+```sh
+pkg install golang age openssl-tool -y
+mkdir -p "$HOME/rss-secure"
+curl -fsSLo "$HOME/rss-secure/setup-keys-termux.sh" \
+  https://raw.githubusercontent.com/riyazamra1/RSS-Telegram-Manager/main/security/setup-keys-termux.sh
+bash "$HOME/rss-secure/setup-keys-termux.sh"
+```
+
+The helper stores the private identity, encrypted recovery copy, passphrase file, and
+public recipient under `~/rss-secure/`. It does not overwrite the earlier SSH test files.
+Keep the private identity secret. Back up the encrypted recovery copy and passphrase
+separately before relying on them.
+
+**Linux / macOS / Windows with a trusted shell:** from the repository root, run:
 
 ```sh
 ./security/setup-keys.sh
