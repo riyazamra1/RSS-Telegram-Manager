@@ -77,7 +77,8 @@ EOF
 
 (
   cd "$TMP"
-  IDENTITY_PATH="$IDENTITY" RECIPIENTS_PATH="$RECIPIENTS" GOTOOLCHAIN=local go run -mod=mod .
+  echo "RSS-TM-KEY-SETUP v3: executing repository Go source"
+  IDENTITY_PATH="$IDENTITY" RECIPIENTS_PATH="$RECIPIENTS" GOTOOLCHAIN=local go run -mod=mod "$TMP/main.go"
 )
 
 chmod 600 "$IDENTITY"
