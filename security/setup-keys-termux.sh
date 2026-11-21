@@ -52,8 +52,10 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 3 {
-		fmt.Fprintln(os.Stderr, "usage: keygen identity-file recipients-file")
+	identityPath := os.Getenv("IDENTITY_PATH")
+	recipientsPath := os.Getenv("RECIPIENTS_PATH")
+	if identityPath == "" || recipientsPath == "" {
+		fmt.Fprintln(os.Stderr, "keygen configuration is missing")
 		os.Exit(2)
 	}
 	identity, err := age.GenerateX25519Identity()
@@ -61,12 +63,12 @@ func main() {
 		fmt.Fprintln(os.Stderr, "key generation failed:", err)
 		os.Exit(1)
 	}
-	if err := os.WriteFile(os.Args[1], []byte(identity.String()+"\n"), 0600); err != nil {
+	if err := os.WriteFile(identityPath, []byte(identity.String()+"\n"), 0600); err != nil {
 		fmt.Fprintln(os.Stderr, "cannot write private identity:", err)
 		os.Exit(1)
 	}
-	if err := os.WriteFile(os.Args[2], []byte(identity.Recipient().String()+"\n"), 0644); err != nil {
-		_ = os.Remove(os.Args[1])
+	if err := os.WriteFile(recipientsPath, []byte(identity.Recipient().String()+"\n"), 0644); err != nil {
+		_ = os.Remove(identityPath)
 		fmt.Fprintln(os.Stderr, "cannot write public recipient:", err)
 		os.Exit(1)
 	}
@@ -75,7 +77,7 @@ EOF
 
 (
   cd "$TMP"
-  GOTOOLCHAIN=local go run -mod=mod . "$IDENTITY" "$RECIPIENTS"
+  IDENTITY_PATH="$IDENTITY" RECIPIENTS_PATH="$RECIPIENTS" GOTOOLCHAIN=local go run -mod=mod .
 )
 
 chmod 600 "$IDENTITY"
